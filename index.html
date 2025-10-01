@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Personal Webpage</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+      transition: background-color 0.3s ease;
+    }
+    h1 { color: #333; }
+    .section { margin-bottom: 30px; }
+    .color-picker input { margin: 5px; }
+    .weather, .tv, .todo, .extras { background: #fff; padding: 15px; border-radius: 8px; }
+    .todo input[type="text"] { width: 70%; padding: 5px; }
+    .todo button { padding: 5px 10px; }
+    ul { list-style-type: none; padding: 0; }
+    li { margin: 5px 0; }
+  </style>
+</head>
+<body>
+
+  <h1>Welcome to My Personal Webpage</h1>
+
+  <!-- 🎨 Color Picker -->
+  <div class="section color-picker">
+    <h2>Change Page Color</h2>
+    <input type="color" id="colorInput" />
+    <button onclick="changeColor()">Apply Color</button>
+  </div>
+
+  <!-- 🌦️ Weather Section -->
+  <div class="section weather">
+    <h2>Weather in Canberra</h2>
+    <div id="weatherData">Loading weather...</div>
+  </div>
+
+  <!-- 📺 Free TV Section -->
+  <div class="section tv">
+    <h2>Free TV Channels</h2>
+    <label><input type="checkbox" checked> ABC Australia</label><br/>
+    <label><input type="checkbox"> SBS</label><br/>
+    <label><input type="checkbox"> 7plus</label><br/>
+    <label><input type="checkbox"> 9Now</label><br/>
+    <label><input type="checkbox"> 10Play</label>
+  </div>
+
+  <!-- ✅ To-Do List -->
+  <div class="section todo">
+    <h2>To-Do List</h2>
+    <input type="text" id="todoInput" placeholder="Add a task..." />
+    <button onclick="addTodo()">Add</button>
+    <ul id="todoList"></ul>
+  </div>
+
+  <!-- ✨ Extras -->
+  <div class="section extras">
+    <h2>Good Vibes</h2>
+    <p><strong>Local Time:</strong> <span id="localTime"></span></p>
+    <p><strong>Quote of the Day:</strong> <em id="quote">"Stay curious, stay kind."</em></p>
+  </div>
+
+  <script>
+    // 🎨 Color Changer
+    function changeColor() {
+      const color = document.getElementById('colorInput').value;
+      document.body.style.backgroundColor = color;
+    }
+
+    // 🌦️ Weather API (OpenWeatherMap)
+    const apiKey = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=Canberra,AU&units=metric&appid=${apiKey}`)
+      .then(response => response.json())
+      .then(data => {
+        const weatherDiv = document.getElementById('weatherData');
+        weatherDiv.innerHTML = `
+          <strong>${data.weather[0].main}</strong> - ${data.weather[0].description}<br/>
+          Temp: ${data.main.temp}°C<br/>
+          Humidity: ${data.main.humidity}%
+        `;
+      });
+
+    // ✅ To-Do List
+    function addTodo() {
+      const input = document.getElementById('todoInput');
+      const list = document.getElementById('todoList');
+      if (input.value.trim()) {
+        const li = document.createElement('li');
+        li.textContent = input.value;
+        list.appendChild(li);
+        input.value = '';
+      }
+    }
+
+    // 🕒 Local Time
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('localTime').textContent = now.toLocaleTimeString('en-AU', { timeZone: 'Australia/Sydney' });
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+  </script>
+
+</body>
+</html>
